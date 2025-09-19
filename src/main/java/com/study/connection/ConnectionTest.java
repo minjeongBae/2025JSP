@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 public class ConnectionTest {
 
-    static final String DB_URL = "jdbc:mysql://localhost:3306/ebrainsoft_study";
+    static final String DB_URL = "jdbc:mysql://localhost:3307/ebrainsoft_study";
     static final String USER = "ebsoft";
     static final String PASS = "ebsoft";
 
