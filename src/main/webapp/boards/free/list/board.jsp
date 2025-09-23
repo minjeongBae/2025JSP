@@ -1,6 +1,7 @@
-<%@ page import="com.study.board.BoardDAO" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.study.post.PostDTO" %>
+<%@ page import="com.study.board.post.PostDTO" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="com.study.board.post.PostDAO" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <style>
@@ -23,12 +24,23 @@
     등록일  <input type="date" id = "frontDate">
            <input type="date" id = "tailDate">
     <input type="text" id = "searchWord">
-    <button type="submit">검색</button>
+    <button onclick="searchPost()">검색</button>
 </form>
 
 <%
-    BoardDAO boardDao = new BoardDAO();
-    List<PostDTO> board = boardDao.selectBoard();
+    String fDate = (request.getParameter("frontDate") != null) ? request.getParameter("frontDate") : "";
+    String tDate = (request.getParameter("tailDate") != null) ? request.getParameter("tailDate") : "";
+    String searchWord = (request.getParameter("searchword") != null) ? request.getParameter("searchword") : "";
+
+    PostDAO boardDao = new PostDAO();
+    List<PostDTO> board;
+    if(!fDate.equals("") || !tDate.equals("") || !searchWord.equals("")) {
+       board = boardDao.selectPostsSearch(fDate,tDate,searchWord);
+    }else {
+        board = boardDao.selectPostsAll();
+    }
+
+
 %>
 
 <br/>
@@ -90,6 +102,9 @@
     %>
 
 </table>
+<div align="right" style="width: 80%">
+    <button onclick="window.location.href = '/boards/free/list/post/update_post.jsp">등록</button>
+</div>
 
 
 
@@ -101,4 +116,20 @@
         window.location.href = '/boards/free/list/post/post.jsp?postid=' + postId;
     }
 
+
+    function searchPost() {
+        let fDate = (document.getElementById("frontDate").value != null)
+                     ? document.getElementById("frontDate").value : "";
+        let tDate = (document.getElementById("tailDate").value)
+                     ? document.getElementById("tailDate").value : "";
+        let word = (document.getElementById("searchWord").value)
+                     ? document.getElementById("searchWord").value : "";
+        const url = window.location.pathname
+                      + '?frontDate=' + fDate
+                      + "&tailDate=" + tDate
+                      + "&searchword=Post" + word;
+        alert(url);
+        window.location.href = url;
+
+    }
 </script>

@@ -14,8 +14,9 @@ public class ConnectionUtil {
     public static Connection getConnection() throws Exception{
 
         Connection conn = null;
-        Statement stmt = null;
 
+        //STEP 2: Register JDBC driver
+        Class.forName("com.mysql.jdbc.Driver");
         try {
             //STEP 2: Register JDBC driver
             Class.forName("com.mysql.jdbc.Driver");

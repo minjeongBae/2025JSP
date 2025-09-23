@@ -1,4 +1,4 @@
-package com.study.post;
+package com.study.board.post;
 
 import com.study.connection.ConnectionUtil;
 
@@ -12,9 +12,8 @@ public class PostDAO {
 
     public PostDTO selectPost(int id) {
         String sql = "SELECT * FROM POST WHERE POST_ID = ?";
-        try {
-            Connection conn = ConnectionUtil.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);){
             pstmt.setInt(1,id);
 
             ResultSet rs = pstmt.executeQuery();
@@ -48,9 +47,8 @@ public class PostDAO {
                 "FROM POST"
                 +  " LEFT JOIN FILE FILE ON FILE.POST_ID = POST.POST_ID"
                   ;
-        try {
-            Connection conn = ConnectionUtil.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);){
 
             ResultSet rs = pstmt.executeQuery();
             List<PostDTO> posts = new ArrayList<>();
@@ -67,7 +65,6 @@ public class PostDAO {
                 post.setFiles(rs.getInt("FILES"));
                 posts.add(post);
 
-                System.out.println(post.getViews());
             }
             conn.close();
             return posts;
@@ -77,7 +74,7 @@ public class PostDAO {
     }
 
 
-    public List<PostDTO> selectPostsSearchWord(String searchWord) {
+    public List<PostDTO> selectPostsSearch(String fDate, String tDate, String word) {
         String sql = "SELECT POST.POST_ID, WRITER, CATEGORY, TITLE" +
                 ", VIEWS, CREATE_DATE, UPDATE_DATE," +
                 "CASE WHEN FILE.FILE_NAME IS NULL THEN 0 ELSE 1 END AS  FILES " +
@@ -85,9 +82,9 @@ public class PostDAO {
                 +  " LEFT JOIN FILE FILE ON FILE.POST_ID = POST.POST_ID" +
                 " WHERE TITLE LIKE ? OR CONTENET LIKE ? OR WRITER LIKE ?"
                 ;
-        try {
-            Connection conn = ConnectionUtil.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);){
+
 
             ResultSet rs = pstmt.executeQuery();
             List<PostDTO> posts = new ArrayList<>();
@@ -115,13 +112,13 @@ public class PostDAO {
 
     public int addViews(int postId) {
         String sql = "UPDATE POST SET VIEWS = VIEWS+1 WHERE POST_ID = ?";
-        try{
-
-            Connection conn = ConnectionUtil.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+        try (Connection conn = ConnectionUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);) {
 
             pstmt.setInt(1,postId);
-            return pstmt.executeUpdate();
+            int rs = pstmt.executeUpdate();
+            conn.close();
+            return rs;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

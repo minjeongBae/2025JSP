@@ -7,9 +7,8 @@
 </head>
 <body>
 
-<div align="center">
-
-    <button style="width: 50%;" type = "button" onclick="location.href = '/boards/free/list/board.jsp'">게시판</button>
+<div style="justify-content: center; align-content: center; display: flex">
+    <button style="width: 50%; height: 15%" type = "button" onclick="location.href = '/boards/free/list/board.jsp'">게시판</button>
 </div>
 </body>
 </html>
