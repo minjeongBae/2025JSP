@@ -48,7 +48,7 @@
     <thead>
         <tr>
             <th>카테고리</th>
-            <th></th>
+            <th>파일</th>
             <th>제목</th>
             <th>작성자</th>
             <th>조회수</th>
@@ -105,8 +105,6 @@
 <div align="right" style="width: 80%">
     <button onclick="window.location.href = '/boards/free/list/post/update_post.jsp">등록</button>
 </div>
-
-
 
 </body>
 </html>
