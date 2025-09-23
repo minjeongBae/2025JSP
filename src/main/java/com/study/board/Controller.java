@@ -16,23 +16,27 @@ public class Controller extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         Command command;
-        String commandName = req.getParameter("command");
+        String commandName = "";
+        if (req.getParameter("command")!=null) commandName = req.getParameter("command");
+        RequestDispatcher rd = null;
 
-        System.out.println("** entered\ncommandName:"+commandName);
         if(commandName.contains("insert")){
             if(commandName.contains("comment")){
                 command = new CommentCommand();
-
                 command.insert(req, res);
             }
             else if(commandName.contains("post")){
                 command = new PostCommand();
-            } else return;
 
+            }
+            rd = req.getRequestDispatcher("/boards/free/list/post/post.jsp");
+            CommentDAO commentDAO = new CommentDAO();
+            req.setAttribute("comments", commentDAO.selectComments(Integer.parseInt(req.getParameter("postid"))));
         }
-        CommentDAO commentDAO = new CommentDAO();
-        req.setAttribute("comments", commentDAO.selectComments(Integer.parseInt(req.getParameter("postid"))));
-        RequestDispatcher rd = req.getRequestDispatcher("/boards/free/list/post/post.jsp");
+        else { // commandName == NULL
+            rd = req.getRequestDispatcher("/boards/free/list/board.jsp");
+        };
+
         rd.forward(req, res);
     }
 
