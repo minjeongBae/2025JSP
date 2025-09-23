@@ -11,7 +11,8 @@ import java.util.List;
 public class PostDAO {
 
     public PostDTO selectPost(int id) {
-        String sql = "SELECT * FROM POST WHERE POST_ID = ?";
+        String sql = "SELECT P.*, C.NAME AS CATEGORY_NM FROM POST P INNER JOIN CATEGORY C ON P.CATEGORY = C.CD " +
+                " WHERE POST_ID = ?";
         try (Connection conn = ConnectionUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);){
             pstmt.setInt(1,id);
@@ -26,7 +27,7 @@ public class PostDAO {
                 post.setContent(rs.getString("CONTENT"));
                 post.setCreateDate(rs.getDate("CREATE_DATE"));
                 post.setUpdateDate(rs.getDate("UPDATE_DATE"));
-                post.setCategory(rs.getString("CATEGORY"));
+                post.setCategory(rs.getString("CATEGORY_NM"));
                 conn.close();
 
                 return post;
@@ -41,10 +42,11 @@ public class PostDAO {
 
 
     public List<PostDTO> selectPostsAll() {
-        String sql = "SELECT POST.POST_ID, WRITER, CATEGORY, TITLE" +
+        String sql = "SELECT POST.POST_ID, WRITER, C.NAME AS CATEGORY, TITLE" +
                 ", VIEWS, CREATE_DATE, UPDATE_DATE," +
                 "CASE WHEN FILE.FILE_NAME IS NULL THEN 0 ELSE 1 END AS  FILES " +
-                "FROM POST"
+                "FROM POST" +
+                " INNER JOIN CATEGORY C ON POST.CATEGORY = C.CD "
                 +  " LEFT JOIN FILE FILE ON FILE.POST_ID = POST.POST_ID"
                   ;
         try (Connection conn = ConnectionUtil.getConnection();
