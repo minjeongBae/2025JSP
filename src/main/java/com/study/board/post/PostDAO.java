@@ -7,7 +7,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PostDAO {
 
@@ -131,6 +133,22 @@ public class PostDAO {
         }
     }
 
+    public Map<Integer, String> getCategories() {
+        String sql = "SELECT * FROM CATEGORY";
+        Map<Integer, String> categories = null;
+
+        try (Connection conn = ConnectionUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);) {
+             ResultSet rs = pstmt.executeQuery();
+             categories = new HashMap<>();
+            while(rs.next()){
+                categories.put(rs.getInt("CD"), rs.getString("NAME"));
+            }
+            return categories;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public int addViews(int postId) {
         String sql = "UPDATE POST SET VIEWS = VIEWS+1 WHERE POST_ID = ?";

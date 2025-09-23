@@ -2,6 +2,7 @@ package com.study.board;
 
 import com.study.board.comment.CommentCommand;
 import com.study.board.post.PostCommand;
+import com.study.board.post.PostDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -36,10 +37,17 @@ public class Controller extends HttpServlet {
             command = new PostCommand();
             rd = req.getRequestDispatcher("/boards/free/list/board.jsp");
             req.setAttribute("board", command.getList(req, res));
+
+            PostDAO postDAO = new PostDAO();
+            req.setAttribute("categories", postDAO.getCategories());
         }
         else { // commandName == NULL
             command = new PostCommand();
             req.setAttribute("board", command.getList(req, res));
+
+            PostDAO postDAO = new PostDAO();
+            req.setAttribute("categories", postDAO.getCategories());
+
             rd = req.getRequestDispatcher("/boards/free/list/board.jsp");
         };
 

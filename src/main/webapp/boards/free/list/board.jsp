@@ -1,5 +1,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.study.board.post.PostDTO" %>
+<%@ page import="java.util.Map" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <style>
@@ -23,6 +24,17 @@
            <input type="date" name = "tailDate">
            <input type="text" name = "searchWord">
     <input type="hidden" name="command" value="/board-search">
+    <select name="category" size="1">
+        <option value="">선택하세요.</option>
+        <%
+            Map<Integer, String> categories = (Map<Integer, String>) request.getAttribute("categories");
+            for(Map.Entry<Integer,String> category : categories.entrySet()) {
+        %>
+            <option value="<%=category.getKey()%>"><%= category.getValue()%></option>
+        <%
+            }
+        %>
+    </select>
     <button type="submit">검색</button>
 </form>
 
