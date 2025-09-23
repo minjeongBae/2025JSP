@@ -24,7 +24,8 @@ public class CommentCommand implements Command {
         return 0;
     }
 
-    public List<CommentDTO> getComments(HttpServletRequest req, HttpServletResponse res) {
+    @Override
+    public Object getList(HttpServletRequest req, HttpServletResponse res) {
         CommentDAO commentDAO = new CommentDAO();
         List<CommentDTO> list = commentDAO.selectComments(Integer.parseInt(req.getParameter("postid")));
         return list;

@@ -1,7 +1,5 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.study.board.post.PostDTO" %>
-<%@ page import="java.util.Date" %>
-<%@ page import="com.study.board.post.PostDAO" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <style>
@@ -20,43 +18,29 @@
 </h1>
 <br/>
 
-<form >
-    등록일  <input type="date" id = "frontDate">
-           <input type="date" id = "tailDate">
-    <input type="text" id = "searchWord">
-    <button onclick="searchPost()">검색</button>
+<form action="/board-search" method="post">
+    등록일  <input type="date" name = "frontDate">
+           <input type="date" name = "tailDate">
+           <input type="text" name = "searchWord">
+    <input type="hidden" name="command" value="/board-search">
+    <button type="submit">검색</button>
 </form>
-
-<%
-    String fDate = (request.getParameter("frontDate") != null) ? request.getParameter("frontDate") : "";
-    String tDate = (request.getParameter("tailDate") != null) ? request.getParameter("tailDate") : "";
-    String searchWord = (request.getParameter("searchword") != null) ? request.getParameter("searchword") : "";
-
-    PostDAO boardDao = new PostDAO();
-    List<PostDTO> board;
-    if(!fDate.equals("") || !tDate.equals("") || !searchWord.equals("")) {
-       board = boardDao.selectPostsSearch(fDate,tDate,searchWord);
-    }else {
-        board = boardDao.selectPostsAll();
-    }
-
-
-%>
 
 <br/>
 <table style="text-align: center;"  border="1" >
     <thead>
         <tr>
-            <th>카테고리</th>
-            <th>파일</th>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>조회수</th>
-            <th>등록일시</th>
-            <th>수정일시</th>
+            <th> 카테고리 </th>
+            <th> 파일 </th>
+            <th> 제목 </th>
+            <th> 작성자 </th>
+            <th> 조회수 </th>
+            <th> 등록일시 </th>
+            <th> 수정일시 </th>
         </tr>
     </thead>
 <%
+    List<PostDTO> board = (List<PostDTO>) request.getAttribute("board");
     for(int i=0; i<board.size(); i++) {
 %>
     <tbody>
@@ -112,22 +96,5 @@
 <script type="text/javascript">
     function showPost(postId) {
         window.location.href = '/boards/free/list/post/post.jsp?postid=' + postId;
-    }
-
-
-    function searchPost() {
-        let fDate = (document.getElementById("frontDate").value != null)
-                     ? document.getElementById("frontDate").value : "";
-        let tDate = (document.getElementById("tailDate").value)
-                     ? document.getElementById("tailDate").value : "";
-        let word = (document.getElementById("searchWord").value)
-                     ? document.getElementById("searchWord").value : "";
-        const url = window.location.pathname
-                      + '?frontDate=' + fDate
-                      + "&tailDate=" + tDate
-                      + "&searchword=Post" + word;
-        alert(url);
-        window.location.href = url;
-
     }
 </script>

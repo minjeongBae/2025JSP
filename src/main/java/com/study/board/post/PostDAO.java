@@ -3,6 +3,7 @@ package com.study.board.post;
 import com.study.connection.ConnectionUtil;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -77,16 +78,35 @@ public class PostDAO {
 
 
     public List<PostDTO> selectPostsSearch(String fDate, String tDate, String word) {
-        String sql = "SELECT POST.POST_ID, WRITER, CATEGORY, TITLE" +
+        String sql = "SELECT POST.POST_ID, WRITER, C.NAME AS CATEGORY, TITLE" +
                 ", VIEWS, CREATE_DATE, UPDATE_DATE," +
                 "CASE WHEN FILE.FILE_NAME IS NULL THEN 0 ELSE 1 END AS  FILES " +
-                "FROM POST"
+                "FROM POST " +
+                "INNER JOIN CATEGORY C ON POST.CATEGORY = C.CD "
                 +  " LEFT JOIN FILE FILE ON FILE.POST_ID = POST.POST_ID" +
-                " WHERE TITLE LIKE ? OR CONTENET LIKE ? OR WRITER LIKE ?"
-                ;
+                " WHERE (TITLE LIKE ? OR CONTENT LIKE ? OR WRITER LIKE ?)";
+
+        List<Object> params = new ArrayList<>();
+        params.add("%"+word+"%");
+        params.add("%"+word+"%");
+        params.add("%"+word+"%");
+
+        if(!fDate.equals("")) {
+            sql += " AND CREATE_DATE >= ?";
+            params.add(Date.valueOf(fDate));
+        }
+        if(!tDate.equals("")) {
+            sql += " AND CREATE_DATE <= ?";
+            params.add(Date.valueOf(tDate));
+        }
+
+
         try (Connection conn = ConnectionUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql);){
 
+            for(int i=0; i<params.size(); i++) {
+                pstmt.setObject(i+1, params.get(i));
+            }
 
             ResultSet rs = pstmt.executeQuery();
             List<PostDTO> posts = new ArrayList<>();

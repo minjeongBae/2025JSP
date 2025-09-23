@@ -1,7 +1,6 @@
 package com.study.board;
 
 import com.study.board.comment.CommentCommand;
-import com.study.board.comment.CommentDAO;
 import com.study.board.post.PostCommand;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -24,16 +23,23 @@ public class Controller extends HttpServlet {
             if(commandName.contains("comment")){
                 command = new CommentCommand();
                 command.insert(req, res);
+
+                rd = req.getRequestDispatcher("/boards/free/list/post/post.jsp");
+                req.setAttribute("comments", command.getList(req, res));
             }
             else if(commandName.contains("post")){
                 command = new PostCommand();
-
+                rd = req.getRequestDispatcher("/boards/free/list/board.jsp");
+                req.setAttribute("comments", command.getList(req, res));
             }
-            rd = req.getRequestDispatcher("/boards/free/list/post/post.jsp");
-            CommentDAO commentDAO = new CommentDAO();
-            req.setAttribute("comments", commentDAO.selectComments(Integer.parseInt(req.getParameter("postid"))));
+        } else if(commandName.contains("board")){
+            command = new PostCommand();
+            rd = req.getRequestDispatcher("/boards/free/list/board.jsp");
+            req.setAttribute("board", command.getList(req, res));
         }
         else { // commandName == NULL
+            command = new PostCommand();
+            req.setAttribute("board", command.getList(req, res));
             rd = req.getRequestDispatcher("/boards/free/list/board.jsp");
         };
 
